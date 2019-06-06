@@ -21,7 +21,7 @@ def read_portfolio(csv_filepath):
     return portfolio
 
 
-def get_price_data(api_key, portfolio):
+def get_price_data(api_key, disable_api_rate_limit, portfolio):
     ts = TimeSeries(key=api_key, output_format='pandas')
     data = []
     meta_data = []
@@ -33,7 +33,7 @@ def get_price_data(api_key, portfolio):
         data.append(tmp_data)
         meta_data.append(tmp_meta_data)
         # API rate limit
-        if i % 5 == 4:
+        if not disable_api_rate_limit and i % 5 == 4:
             time.sleep(60)
         i = i + 1
     return data, meta_data
@@ -61,11 +61,12 @@ def compute_price_with_currency_impact(price_data, cc_data):
 
 
 def compute_portfolio_price_with_currency_impact(api_key,
+                                                 disable_api_rate_limit,
                                                  csv_filepath,
                                                  from_currency,
                                                  to_currency):
     portfolio = read_portfolio(csv_filepath)
-    price_data, _ = get_price_data(api_key, portfolio)
+    price_data, _ = get_price_data(api_key, disable_api_rate_limit, portfolio)
     portfolio_price = compute_portfolio_price(price_data, portfolio)
     cc_data = get_currency_exchange_data(api_key, from_currency, to_currency)
     final_price = compute_price_with_currency_impact(portfolio_price, cc_data)
@@ -76,9 +77,12 @@ def get_close_price(price_data):
     return price_data['4. close']
 
 
-def plot_data(data, fig_filepath):
+def plot_data(data, do_data_scaling, fig_filepath):
     plt.figure(figsize=(30,10), dpi=80)
-    (data / data[0]).plot()
+    if do_data_scaling:
+        (data / data[0]).plot()
+    else:
+        data.plot()
     plt.savefig(fig_filepath, bbox_inches='tight')
 
 
@@ -89,17 +93,19 @@ def main():
     parser.add_argument("--from-currency", type=str, default="USD")
     parser.add_argument("--to-currency", type=str, default="SGD")
     parser.add_argument("--fig-filepath", type=str, default="fig.png")
+    parser.add_argument("--price-scaling", default=False, action='store_true')
+    parser.add_argument("--disable-api-rate-limit", default=False, action='store_true')
     args = parser.parse_args()
 
     final_price = compute_portfolio_price_with_currency_impact(
         args.api_key.strip(),
+        args.disable_api_rate_limit,
         args.csv_filepath.strip(),
         args.from_currency.strip(),
         args.to_currency.strip(),
     )
     final_close_price = get_close_price(final_price)
-    print(final_close_price)
-    plot_data(final_close_price, args.fig_filepath.strip())
+    plot_data(final_close_price, args.price_scaling, args.fig_filepath.strip())
 
 
 if __name__ == "__main__":
