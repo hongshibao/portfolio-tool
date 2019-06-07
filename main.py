@@ -78,11 +78,11 @@ def get_close_price(price_data):
 
 
 def plot_data(data, do_data_scaling, fig_filepath):
-    plt.figure(figsize=(30,10), dpi=80)
+    plt.figure(figsize=(18,6), dpi=100)
     if do_data_scaling:
         (data / data[0]).plot(marker='o')
     else:
-        data.plot()
+        data.plot(marker='o')
     plt.grid()
     plt.savefig(fig_filepath, bbox_inches='tight')
 
