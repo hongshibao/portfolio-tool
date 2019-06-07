@@ -83,6 +83,7 @@ def plot_data(data, do_data_scaling, fig_filepath):
         (data / data[0]).plot(marker='o')
     else:
         data.plot()
+    plt.grid()
     plt.savefig(fig_filepath, bbox_inches='tight')
 
 
