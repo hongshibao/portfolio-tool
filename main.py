@@ -15,62 +15,85 @@ def read_portfolio(csv_filepath):
             if is_header:
                 is_header = False
                 continue
-            # symbol,weight
+            # symbol,currency,weight
             print(row)
-            portfolio.append((row[0], float(row[1])))
+            portfolio.append((row[0], row[1], float(row[2])))
     return portfolio
 
 
-def get_price_data(api_key, disable_api_rate_limit, portfolio):
+def check_api_rate_limit(disable_api_rate_limit, count):
+    if not disable_api_rate_limit and count % 5 == 4:
+        time.sleep(60)
+
+
+def get_price_data(api_key, disable_api_rate_limit, symbols):
     ts = TimeSeries(key=api_key, output_format='pandas')
-    data = []
-    meta_data = []
-    symbols = [item[0] for item in portfolio]
-    i = 0
+    data_list = []
+    meta_data_list = []
+    count = 0
     for symbol in symbols:
         print(symbol)
-        tmp_data, tmp_meta_data = ts.get_daily(symbol=symbol, outputsize='compact')
-        data.append(tmp_data)
-        meta_data.append(tmp_meta_data)
+        data, meta_data = ts.get_daily(symbol=symbol, outputsize='compact')
+        data_list.append(data)
+        meta_data_list.append(meta_data)
         # API rate limit
-        if not disable_api_rate_limit and i % 5 == 4:
-            time.sleep(60)
-        i = i + 1
-    return data, meta_data
+        check_api_rate_limit(disable_api_rate_limit, count)
+        count = count + 1
+    return data_list, meta_data_list
 
 
-def compute_portfolio_price(price_data, portfolio):
-    weights = [item[1] for item in portfolio]
-    portfolio_price = price_data[0] * weights[0]
-    for i in range(1, len(price_data)):
-        portfolio_price = portfolio_price + price_data[i] * weights[i]
-    return portfolio_price
-
-
-def get_currency_exchange_data(api_key, from_currency, to_currency):
+def get_currency_exchange_data(api_key, disable_api_rate_limit,
+                               from_currency_list, to_currency):
     cc = ForeignExchange(key=api_key, output_format='pandas')
-    cc_data, _ = cc.get_currency_exchange_daily(from_symbol=from_currency,
-                                                to_symbol=to_currency,
-                                                outputsize='compact')
-    return cc_data
+    cc_data_dict = {}
+    count = 0
+    for from_currency in from_currency_list:
+        if from_currency in cc_data_dict:
+            continue
+        print("{} -> {}".format(from_currency, to_currency))
+        cc_data, _ = cc.get_currency_exchange_daily(from_symbol=from_currency,
+                                                    to_symbol=to_currency,
+                                                    outputsize='compact')
+        cc_data_dict[from_currency] = cc_data
+        check_api_rate_limit(disable_api_rate_limit, count)
+        count = count + 1
+    return cc_data_dict
 
 
-def compute_price_with_currency_impact(price_data, cc_data):
-    # Last column of price_data is volume, which cc_data does not have
+def compute_price_with_cc_impact(price_data, cc_data):
+    # Last column of price_data is "volume", which cc_data does not have
     return (price_data.iloc[:, 0:-1] * cc_data).dropna()
 
 
-def compute_portfolio_price_with_currency_impact(api_key,
-                                                 disable_api_rate_limit,
-                                                 csv_filepath,
-                                                 from_currency,
-                                                 to_currency):
+def compute_portfolio_price_with_cc_impact(price_data_list, cc_data_dict,
+                                           currencies, weights):
+    portfolio_price = 0
+    for i in range(len(price_data_list)):
+        price_with_cc_impact = compute_price_with_cc_impact(price_data_list[i],
+                                                            cc_data_dict[currencies[i]])
+        portfolio_price = portfolio_price + price_with_cc_impact * weights[i]
+    return portfolio_price
+
+
+def get_portfolio_price(api_key, disable_api_rate_limit,
+                        csv_filepath, to_currency):
+    # read portfolio
     portfolio = read_portfolio(csv_filepath)
-    price_data, _ = get_price_data(api_key, disable_api_rate_limit, portfolio)
-    portfolio_price = compute_portfolio_price(price_data, portfolio)
-    cc_data = get_currency_exchange_data(api_key, from_currency, to_currency)
-    final_price = compute_price_with_currency_impact(portfolio_price, cc_data)
-    return final_price
+    # get symbols, currencies, weights from portfolio
+    symbols = [item[0] for item in portfolio]
+    currencies = [item[1] for item in portfolio]
+    weights = [item[2] for item in portfolio]
+    # get daily price data
+    price_data_list, _ = get_price_data(api_key, disable_api_rate_limit, symbols)
+    # get currency exchange data
+    cc_data_dict = get_currency_exchange_data(api_key, disable_api_rate_limit,
+                                              currencies, to_currency)
+    # compute portfolio price with currency impact
+    portfolio_price = compute_portfolio_price_with_cc_impact(price_data_list,
+                                                             cc_data_dict,
+                                                             currencies,
+                                                             weights)
+    return portfolio_price
 
 
 def get_close_price(price_data):
@@ -91,22 +114,20 @@ def main():
     parser = argparse.ArgumentParser(description="Compute Portfolio Price")
     parser.add_argument("--api-key", type=str, default="")
     parser.add_argument("--csv-filepath", type=str, default="")
-    parser.add_argument("--from-currency", type=str, default="USD")
     parser.add_argument("--to-currency", type=str, default="SGD")
     parser.add_argument("--fig-filepath", type=str, default="fig.png")
     parser.add_argument("--price-scaling", default=False, action='store_true')
     parser.add_argument("--disable-api-rate-limit", default=False, action='store_true')
     args = parser.parse_args()
 
-    final_price = compute_portfolio_price_with_currency_impact(
+    portfolio_price = get_portfolio_price(
         args.api_key.strip(),
         args.disable_api_rate_limit,
         args.csv_filepath.strip(),
-        args.from_currency.strip(),
         args.to_currency.strip(),
     )
-    final_close_price = get_close_price(final_price)
-    plot_data(final_close_price, args.price_scaling, args.fig_filepath.strip())
+    portfolio_close_price = get_close_price(portfolio_price)
+    plot_data(portfolio_close_price, args.price_scaling, args.fig_filepath.strip())
 
 
 if __name__ == "__main__":
