@@ -21,12 +21,12 @@ def read_portfolio(csv_filepath):
     return portfolio
 
 
-def check_api_rate_limit(disable_api_rate_limit, count):
-    if not disable_api_rate_limit and count % 5 == 4:
+def check_api_rate_limit(enable_api_rate_limit_control, count):
+    if enable_api_rate_limit_control and count % 5 == 4:
         time.sleep(60)
 
 
-def get_price_data(api_key, disable_api_rate_limit, symbols):
+def get_price_data(api_key, enable_api_rate_limit_control, symbols):
     ts = TimeSeries(key=api_key, output_format='pandas')
     data_list = []
     meta_data_list = []
@@ -37,12 +37,12 @@ def get_price_data(api_key, disable_api_rate_limit, symbols):
         data_list.append(data)
         meta_data_list.append(meta_data)
         # API rate limit
-        check_api_rate_limit(disable_api_rate_limit, count)
+        check_api_rate_limit(enable_api_rate_limit_control, count)
         count = count + 1
     return data_list, meta_data_list
 
 
-def get_currency_exchange_data(api_key, disable_api_rate_limit,
+def get_currency_exchange_data(api_key, enable_api_rate_limit_control,
                                from_currency_list, to_currency):
     cc = ForeignExchange(key=api_key, output_format='pandas')
     cc_data_dict = {}
@@ -55,7 +55,7 @@ def get_currency_exchange_data(api_key, disable_api_rate_limit,
                                                     to_symbol=to_currency,
                                                     outputsize='compact')
         cc_data_dict[from_currency] = cc_data
-        check_api_rate_limit(disable_api_rate_limit, count)
+        check_api_rate_limit(enable_api_rate_limit_control, count)
         count = count + 1
     return cc_data_dict
 
@@ -75,7 +75,7 @@ def compute_portfolio_price_with_cc_impact(price_data_list, cc_data_dict,
     return portfolio_price
 
 
-def get_portfolio_price(api_key, disable_api_rate_limit,
+def get_portfolio_price(api_key, enable_api_rate_limit_control,
                         csv_filepath, to_currency):
     # read portfolio
     portfolio = read_portfolio(csv_filepath)
@@ -84,9 +84,10 @@ def get_portfolio_price(api_key, disable_api_rate_limit,
     currencies = [item[1] for item in portfolio]
     weights = [item[2] for item in portfolio]
     # get daily price data
-    price_data_list, _ = get_price_data(api_key, disable_api_rate_limit, symbols)
+    price_data_list, _ = get_price_data(api_key, enable_api_rate_limit_control,
+                                        symbols)
     # get currency exchange data
-    cc_data_dict = get_currency_exchange_data(api_key, disable_api_rate_limit,
+    cc_data_dict = get_currency_exchange_data(api_key, enable_api_rate_limit_control,
                                               currencies, to_currency)
     # compute portfolio price with currency impact
     portfolio_price = compute_portfolio_price_with_cc_impact(price_data_list,
@@ -112,17 +113,24 @@ def plot_data(data, do_data_scaling, fig_filepath):
 
 def main():
     parser = argparse.ArgumentParser(description="Compute Portfolio Price")
-    parser.add_argument("--api-key", type=str, default="")
-    parser.add_argument("--csv-filepath", type=str, default="")
-    parser.add_argument("--to-currency", type=str, default="SGD")
-    parser.add_argument("--fig-filepath", type=str, default="fig.png")
-    parser.add_argument("--price-scaling", default=False, action='store_true')
-    parser.add_argument("--disable-api-rate-limit", default=False, action='store_true')
+    parser.add_argument("--api-key", type=str, default="",
+                        help="Alpha Vantage API key")
+    parser.add_argument("--csv-filepath", type=str, default="",
+                        help="Portfolio csv file")
+    parser.add_argument("--to-currency", type=str, default="SGD",
+                        help="The currency to be used in portfolio")
+    parser.add_argument("--fig-filepath", type=str, default="fig.png",
+                        help="The path and file name for output figure")
+    parser.add_argument("--price-scaling", default=False, action='store_true',
+                        help="Do price scaling")
+    parser.add_argument("--enable-api-rate-limit-control",
+                        default=False, action='store_true',
+                        help="Enable API rate limit control")
     args = parser.parse_args()
 
     portfolio_price = get_portfolio_price(
         args.api_key.strip(),
-        args.disable_api_rate_limit,
+        args.enable_api_rate_limit_control,
         args.csv_filepath.strip(),
         args.to_currency.strip(),
     )
