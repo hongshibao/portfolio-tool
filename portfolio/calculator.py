@@ -72,7 +72,7 @@ class Calculator:
             # last column of price_data is "volume", which cc_data does not have
             price_data = price_data_list[i].iloc[:, 0:-1]
             cc_data = cc_data_dict[self._currencies[i]]
-            # use dropna() to Remove NaN rows
+            # use dropna() to remove NaN rows
             price_with_cc_impact = (price_data * cc_data).dropna()
             portfolio_price = portfolio_price + price_with_cc_impact * self._weights[i]
         return portfolio_price
