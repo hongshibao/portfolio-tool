@@ -74,5 +74,6 @@ class Calculator:
             cc_data = cc_data_dict[self._currencies[i]]
             # use dropna() to remove NaN rows
             price_with_cc_impact = (price_data * cc_data).dropna()
-            portfolio_price = portfolio_price + price_with_cc_impact * self._weights[i]
+            weighted_price_with_cc_impact = price_with_cc_impact * self._weights[i]
+            portfolio_price = (portfolio_price + weighted_price_with_cc_impact).dropna()
         return portfolio_price
