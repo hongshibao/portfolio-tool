@@ -16,7 +16,7 @@ def run():
     parser.add_argument("--to-currency", type=str, default="SGD",
                         help="The currency to be used in portfolio")
     parser.add_argument("--num-days", type=int, default=100,
-                        help="Show the latest num-days price data")
+                        help="Show the latest NUM_DAYS price data")
     parser.add_argument("--fig-filepath", type=str, default="fig.png",
                         help="The path and file name for output figure")
     parser.add_argument("--price-scaling", default=False, action='store_true',
