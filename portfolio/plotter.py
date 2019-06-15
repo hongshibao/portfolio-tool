@@ -8,7 +8,6 @@ class Plotter:
 
 
     def plot_time_series_data(self, data, fig_filepath):
-        plt.figure(figsize=self._figure_size, dpi=self._dpi)
-        data.plot(marker=self._marker)
-        plt.grid()
+        plt.figure(dpi=self._dpi)
+        data.plot(grid=True, marker=self._marker, figsize=self._figure_size)
         plt.savefig(fig_filepath, bbox_inches='tight')
