@@ -15,6 +15,8 @@ def run():
                         help="Portfolio csv file")
     parser.add_argument("--to-currency", type=str, default="SGD",
                         help="The currency to be used in portfolio")
+    parser.add_argument("--num-days", type=int, default=100,
+                        help="Show the latest num-days price data")
     parser.add_argument("--fig-filepath", type=str, default="fig.png",
                         help="The path and file name for output figure")
     parser.add_argument("--price-scaling", default=False, action='store_true',
@@ -24,7 +26,7 @@ def run():
     data_src = data.alpha_vantage.AlphaVantageData(args.data_api_key,
                                                    args.enable_api_rate_control)
     calc = calculator.Calculator(data_src, args.csv_filepath, args.to_currency)
-    portfolio_price = calc.get_portfolio_price()
+    portfolio_price = calc.get_portfolio_price(args.num_days)
     portfolio_close_price = data_src.get_close_price(portfolio_price)
     if args.price_scaling:
         portfolio_close_price = portfolio_close_price / portfolio_close_price[0]

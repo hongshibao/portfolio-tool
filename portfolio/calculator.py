@@ -12,17 +12,17 @@ class Calculator:
         self.read_portfolio()
 
 
-    def get_portfolio_price(self):
+    def get_portfolio_price(self, num_days):
         # get daily price data
-        price_data_list = self.get_price_data()
+        price_data_list = self.get_price_data(2 * num_days)
         # get currency exchange data
-        cc_data_dict = self.get_currency_exchange_data()
+        cc_data_dict = self.get_currency_exchange_data(2 * num_days)
         # compute portfolio price with currency impact
         portfolio_price = self.compute_portfolio_price_with_cc_impact(
             price_data_list,
             cc_data_dict,
         )
-        return portfolio_price
+        return portfolio_price[-num_days:]
 
 
     def read_portfolio(self):
@@ -43,16 +43,16 @@ class Calculator:
                 self._weights.append(float(row[2]))
 
 
-    def get_price_data(self):
+    def get_price_data(self, num_days):
         price_data_list = []
         for symbol in self._symbols:
-            price_data = self._data_src.get_price_daily(symbol)
+            price_data = self._data_src.get_price_daily(symbol, num_days)
             price_data_list.append(price_data)
             print(symbol) #TODO
         return price_data_list
 
-    
-    def get_currency_exchange_data(self):
+
+    def get_currency_exchange_data(self, num_days):
         cc_data_dict = {}
         for from_currency in self._currencies:
             if from_currency in cc_data_dict:
@@ -60,6 +60,7 @@ class Calculator:
             cc_data = self._data_src.get_forex_daily(
                 from_currency,
                 self._to_currency,
+                num_days,
             )
             cc_data_dict[from_currency] = cc_data
             print("{} -> {}".format(from_currency, self._to_currency)) #TODO
