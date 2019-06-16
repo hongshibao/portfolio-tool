@@ -34,12 +34,26 @@ Options:
 
 Free Alpha Vantage API key can be claimed [here](https://www.alphavantage.co/support/#api-key). But there is API rate limit for free API keys. Argument *--enable-api-rate-control* can enable API rate control to make sure it will not reach the Alpha Vantage API rate limit.
 
-The portfolio CSV has 3 columns: *symbol*, *currency*, and *weight*. Check [this file](resources/portfolio.csv) for an example portfolio CSV. The list of available physical currency can be downloaded [here](https://www.alphavantage.co/physical_currency_list/).
+The portfolio CSV has 3 columns: *symbol*, *currency*, and *weight*. Example portfolio CSV data:
+```
+symbol,currency,weight
+XLP,USD,0.033
+XLY,USD,0.148
+CWB,USD,0.148
+FEZ,USD,0.031
+AAXJ,USD,0.070
+GLD,USD,0.104
+VGIT,USD,0.141
+TLT,USD,0.119
+TIP,USD,0.148
+TLH,USD,0.048
+```
+The list of available physical currency can be downloaded [here](https://www.alphavantage.co/physical_currency_list/).
 
 Example output without price scaling:
 
-![alt text](resoures/fig.png?raw=true "output figure without price scaling")
+![figure without price scaling](resources/fig.png)
 
 Example output with price scaling:
 
-![alt text](resoures/fig-scaling.png?raw=true "output figure with price scaling")
+![figure with price scaling](resources/fig-scaling.png)
