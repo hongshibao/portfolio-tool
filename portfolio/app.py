@@ -15,7 +15,7 @@ logger.enable("calculator")
               help="Alpha Vantage API key")
 @click.option("--enable-api-rate-control", type=bool, is_flag=True, 
               help="Enable API rate limit control")
-@click.option("--csv-filepath", type=str, default="", 
+@click.option("--csv-filepath", type=str, default="resources/portfolio.csv", 
               help="The portfolio CSV file")
 @click.option("--to-currency", type=str, default="SGD", 
               help="Destination currency for the portfolio")
