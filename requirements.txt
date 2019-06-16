@@ -4,6 +4,7 @@ astroid==2.2.5
 better-exceptions-fork==0.2.1.post6
 certifi==2019.3.9
 chardet==3.0.4
+Click==7.0
 colorama==0.4.1
 cycler==0.10.0
 idna==2.8

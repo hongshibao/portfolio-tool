@@ -1,47 +1,47 @@
 from loguru import logger
+import click
 import data.alpha_vantage
 import calculator
 import plotter
-import argparse
 
 
 # enable logging in scripts
 logger.enable("calculator")
 
 
-def run():
-    parser = argparse.ArgumentParser(description="Compute Portfolio Price")
-    parser.add_argument("--data-api-key", type=str, default="",
-                        help="Alpha Vantage API key")
-    parser.add_argument("--enable-api-rate-control",
-                        default=False, action='store_true',
-                        help="Enable API rate limit control")
-    parser.add_argument("--csv-filepath", type=str, default="",
-                        help="Portfolio csv file")
-    parser.add_argument("--to-currency", type=str, default="SGD",
-                        help="The currency to be used in portfolio")
-    parser.add_argument("--num-days", type=int, default=100,
-                        help="Show the latest NUM_DAYS price data")
-    parser.add_argument("--fig-filepath", type=str, default="fig.png",
-                        help="The path and file name for output figure")
-    parser.add_argument("--price-scaling", default=False, action='store_true',
-                        help="Do price scaling")
-    args = parser.parse_args()
-
-    data_src = data.alpha_vantage.AlphaVantageData(args.data_api_key,
-                                                   args.enable_api_rate_control)
-    calc = calculator.Calculator(data_src, args.csv_filepath, args.to_currency)
+# @logger.catch
+@click.command()
+@click.option("--data-api-key", type=str, default="", 
+              help="Alpha Vantage API key")
+@click.option("--enable-api-rate-control", type=bool, is_flag=True, 
+              help="Enable API rate limit control")
+@click.option("--csv-filepath", type=str, default="", 
+              help="Portfolio csv file")
+@click.option("--to-currency", type=str, default="SGD", 
+              help="The currency to be used in portfolio")
+@click.option("--num-days", type=int, default=100, 
+              help="Show the latest num-days price data")
+@click.option("--fig-filepath", type=str, default="fig.png", 
+              help="The path and file name for output figure")
+@click.option("--price-scaling", type=bool, is_flag=True, 
+              help="Do price scaling")
+def run(data_api_key, enable_api_rate_control,
+        csv_filepath, to_currency, num_days,
+        fig_filepath, price_scaling):
+    data_src = data.alpha_vantage.AlphaVantageData(data_api_key,
+                                                   enable_api_rate_control)
+    calc = calculator.Calculator(data_src, csv_filepath, to_currency)
     # get portfolio price
     logger.debug("Start to compute portfolio price with currency impact")
-    portfolio_price = calc.get_portfolio_price(args.num_days)
+    portfolio_price = calc.get_portfolio_price(num_days)
     portfolio_close_price = data_src.get_close_price(portfolio_price)
-    if args.price_scaling:
+    if price_scaling:
         portfolio_close_price = portfolio_close_price / portfolio_close_price[0]
     logger.debug("Computing portfolio price with currency impact is done")
     # plot
     plt = plotter.Plotter()
     logger.debug("Start to plot portfolio price time series")
-    plt.plot_time_series_data(portfolio_close_price, args.fig_filepath)
+    plt.plot_time_series_data(portfolio_close_price, fig_filepath)
     logger.debug("Plotting portfolio price time series is done")
 
 
