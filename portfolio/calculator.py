@@ -3,6 +3,11 @@ import zope.interface.verify
 import data.interface
 import csv
 
+
+# disable logging in modules
+logger.disable("calculator")
+
+
 class Calculator:
     def __init__(self, data_src, csv_filepath, to_currency):
         zope.interface.verify.verifyObject(data.interface.IData, data_src)

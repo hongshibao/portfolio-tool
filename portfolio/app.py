@@ -5,6 +5,10 @@ import plotter
 import argparse
 
 
+# enable logging in scripts
+logger.enable("calculator")
+
+
 def run():
     parser = argparse.ArgumentParser(description="Compute Portfolio Price")
     parser.add_argument("--data-api-key", type=str, default="",
