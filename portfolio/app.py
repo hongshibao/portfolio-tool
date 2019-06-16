@@ -7,6 +7,7 @@ import plotter
 
 # enable logging in scripts
 logger.enable("calculator")
+logger.enable("plotter")
 
 
 # @logger.catch
