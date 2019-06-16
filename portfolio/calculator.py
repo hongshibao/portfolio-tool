@@ -1,3 +1,4 @@
+from loguru import logger
 import zope.interface.verify
 import data.interface
 import csv
@@ -12,6 +13,7 @@ class Calculator:
         self.read_portfolio()
 
 
+    @logger.catch
     def get_portfolio_price(self, num_days):
         # get daily price data
         price_data_list = self.get_price_data(2 * num_days)
@@ -37,7 +39,7 @@ class Calculator:
                     is_header = False
                     continue
                 # symbol,currency,weight
-                print(row) #TODO use log
+                logger.debug("Portofolio item: {}", row)
                 self._symbols.append(row[0])
                 self._currencies.append(row[1])
                 self._weights.append(float(row[2]))
@@ -46,9 +48,10 @@ class Calculator:
     def get_price_data(self, num_days):
         price_data_list = []
         for symbol in self._symbols:
+            logger.debug("Getting price data for {}", symbol)
             price_data = self._data_src.get_price_daily(symbol, num_days)
             price_data_list.append(price_data)
-            print(symbol) #TODO
+            logger.debug("Price data for {} is gotten", symbol)
         return price_data_list
 
 
@@ -57,13 +60,16 @@ class Calculator:
         for from_currency in self._currencies:
             if from_currency in cc_data_dict:
                 continue
+            logger.debug("Getting currency exchange data for {} -> {}", 
+                            from_currency, self._to_currency)
             cc_data = self._data_src.get_forex_daily(
                 from_currency,
                 self._to_currency,
                 num_days,
             )
             cc_data_dict[from_currency] = cc_data
-            print("{} -> {}".format(from_currency, self._to_currency)) #TODO
+            logger.debug("Currency exchange data for {} -> {} is gotten", 
+                            from_currency, self._to_currency)
         return cc_data_dict
 
 

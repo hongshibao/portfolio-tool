@@ -1,3 +1,4 @@
+from loguru import logger
 import data.alpha_vantage
 import calculator
 import plotter
@@ -26,13 +27,18 @@ def run():
     data_src = data.alpha_vantage.AlphaVantageData(args.data_api_key,
                                                    args.enable_api_rate_control)
     calc = calculator.Calculator(data_src, args.csv_filepath, args.to_currency)
+    # get portfolio price
+    logger.debug("Start to compute portfolio price with currency impact")
     portfolio_price = calc.get_portfolio_price(args.num_days)
     portfolio_close_price = data_src.get_close_price(portfolio_price)
     if args.price_scaling:
         portfolio_close_price = portfolio_close_price / portfolio_close_price[0]
+    logger.debug("Computing portfolio price with currency impact is done")
     # plot
     plt = plotter.Plotter()
+    logger.debug("Start to plot portfolio price time series")
     plt.plot_time_series_data(portfolio_close_price, args.fig_filepath)
+    logger.debug("Plotting portfolio price time series is done")
 
 
 if __name__ == '__main__':
