@@ -16,13 +16,13 @@ logger.enable("calculator")
 @click.option("--enable-api-rate-control", type=bool, is_flag=True, 
               help="Enable API rate limit control")
 @click.option("--csv-filepath", type=str, default="", 
-              help="Portfolio csv file")
+              help="The portfolio CSV file")
 @click.option("--to-currency", type=str, default="SGD", 
-              help="The currency to be used in portfolio")
+              help="Destination currency for the portfolio")
 @click.option("--num-days", type=int, default=100, 
-              help="Show the latest num-days price data")
+              help="The number of days for latest portfolio price data")
 @click.option("--fig-filepath", type=str, default="fig.png", 
-              help="The path and file name for output figure")
+              help="The path and file name for time series figure output")
 @click.option("--price-scaling", type=bool, is_flag=True, 
               help="Do price scaling")
 def run(data_api_key, enable_api_rate_control,
