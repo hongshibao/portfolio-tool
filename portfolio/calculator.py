@@ -18,7 +18,6 @@ class Calculator:
         self.read_portfolio()
 
 
-    @logger.catch
     def get_portfolio_price(self, num_days):
         # get daily price data
         price_data_list = self.get_price_data(2 * num_days)
