@@ -21,7 +21,7 @@ This is a simple tool to compute daily closed price with currency impact for you
 
           $ python --version
 
-      It should output `Python 3.7.3`. If not, please check whether `pyenv` installation is complete.
+      It should output `Python 3.7.3`. Otherwise, please check whether `pyenv` installation is complete.
 
    3. Use `pip` to install `pipenv`:
 
