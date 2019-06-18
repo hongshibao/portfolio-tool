@@ -4,27 +4,35 @@ This is a simple tool to compute daily closed price with currency impact for you
 ## Environment Setup
 1. Install python3 using `pyenv`
 
-   1.1. Follow these instructions for `pyenv` [installation](https://github.com/pyenv/pyenv#installation) or use `pyenv` [automatic installer](https://github.com/pyenv/pyenv-installer).
+   1. Follow these instructions for `pyenv` [installation](https://github.com/pyenv/pyenv#installation) or use `pyenv` [automatic installer](https://github.com/pyenv/pyenv-installer).
 
-   1.2. Install python 3.7.3:
+   1. Install python 3.7.3:
 
-        $ pyenv install 3.7.3
+          $ pyenv install 3.7.3
 
 2. Install `pipenv`
 
-   2.1 Checkout this repo and go to the repo root folder:
+   1. Clone this repository and go to the repository root folder:
 
-        $ git clone git@github.com:hongshibao/portfolio-tool.git
-        $ cd portfolio-tool
+          $ git clone git@github.com:hongshibao/portfolio-tool.git
+          $ cd portfolio-tool
 
-   2.2 Use `pip` to install `pipenv`:
+   2. Make sure it will run python 3.7.3 in this repository:
 
-        $ pip install pipenv
+          $ python --version
 
-3. Install package dependencies using `pipenv`. It will also create a virtual environment dedicated to this repo
+      It should output `Python 3.7.3`. If not, please check whether `pyenv` installation is complete.
+
+   3. Use `pip` to install `pipenv`:
+
+          $ pip install pipenv
+
+3. Install package dependencies using `pipenv`
 
         $ cd portfolio-tool
         $ pipenv install
+     
+   It will also create a virtual environment dedicated to this repository.
 
 4. Activate the virtual environment
 
