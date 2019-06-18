@@ -1,17 +1,36 @@
 # portfolio-tool
 This is a simple tool to compute daily closed price with currency impact for your portfolio. The daily stock price and currency exchange rate are from [Alpha Vantage](https://www.alphavantage.co/) [API](https://www.alphavantage.co/documentation/).
 
+## Environment Setup
+1. Install python3 using `pyenv`
+
+   1.1. Follow these instructions for `pyenv` [installation](https://github.com/pyenv/pyenv#installation) or use `pyenv` [automatic installer](https://github.com/pyenv/pyenv-installer).
+
+   1.2. Install python 3.7.3:
+
+        $ pyenv install 3.7.3
+
+2. Install `pipenv`
+
+   2.1 Checkout this repo and go to the repo root folder:
+
+        $ git clone git@github.com:hongshibao/portfolio-tool.git
+        $ cd portfolio-tool
+
+   2.2 Use `pip` to install `pipenv`:
+
+        $ pip install pipenv
+
+3. Install package dependencies using `pipenv`. It will also create a virtual environment dedicated to this repo
+
+        $ cd portfolio-tool
+        $ pipenv install
+
+4. Activate the virtual environment
+
+        $ pipenv shell
+
 ## Usage
-Follow this [tutorials](https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments) to create a python3 virtual environment. The basic usage is like so:
-
-    $ python3 -m venv <DIR>
-    $ source <DIR>/bin/activate
-
-
-Install dependencies:
-
-    $ pip install -r requirements.txt
-
 Run --help to get usage and arguments:
 
     $ python portfolio/app.py --help
