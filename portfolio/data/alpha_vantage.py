@@ -1,10 +1,11 @@
 from alpha_vantage.timeseries import TimeSeries
 from alpha_vantage.foreignexchange import ForeignExchange
-import zope.interface
-import data.interface
-import time
+from zope.interface import implementer
+from time import sleep
+from portfolio.data.interface import IData
 
-@zope.interface.implementer(data.interface.IData)
+
+@implementer(IData)
 class AlphaVantageData:
     def __init__(self, api_key, enable_api_rate_control):
         self._api_key = api_key
@@ -19,7 +20,7 @@ class AlphaVantageData:
             self._api_call_count = self._api_call_count + 1
             if self._api_call_count > 1 and \
                     self._api_call_count % self._api_rate_control_limit == 1:
-                time.sleep(self._api_rate_control_time)
+                sleep(self._api_rate_control_time)
 
 
     def get_price_daily(self, symbol, num_days):

@@ -1,16 +1,16 @@
 from loguru import logger
-import zope.interface.verify
-import data.interface
-import csv
+from zope.interface.verify import verifyObject
+from portfolio.data.interface import IData
+from csv import reader as CSVReader
 
 
 # disable logging in modules
-logger.disable("calculator")
+logger.disable("portfolio.calculator")
 
 
 class Calculator:
     def __init__(self, data_src, csv_filepath, to_currency):
-        zope.interface.verify.verifyObject(data.interface.IData, data_src)
+        verifyObject(IData, data_src)
         self._data_src = data_src
         self._csv_filepath = csv_filepath
         self._to_currency = to_currency
@@ -36,7 +36,7 @@ class Calculator:
         self._currencies = []
         self._weights = []
         with open(self._csv_filepath, 'r') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',')
+            reader = CSVReader(csvfile, delimiter=',')
             is_header = True
             for row in reader:
                 if is_header:

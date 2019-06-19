@@ -1,10 +1,11 @@
 from loguru import logger
 import matplotlib.pyplot as plt
-import os
+from os import makedirs
+from os.path import dirname, abspath
 
 
 # disable logging in modules
-logger.disable("plotter")
+logger.disable("portfolio.plotter")
 
 
 class Plotter:
@@ -16,10 +17,10 @@ class Plotter:
 
     def plot_time_series_data(self, data, fig_filepath):
         # create folders if not exist
-        folder_path = os.path.dirname(fig_filepath)
+        folder_path = dirname(fig_filepath)
         if folder_path:
-            os.makedirs(folder_path, exist_ok=True)
-        abs_fig_filepath = os.path.abspath(fig_filepath)
+            makedirs(folder_path, exist_ok=True)
+        abs_fig_filepath = abspath(fig_filepath)
         logger.debug("Saving figure to {}", abs_fig_filepath)
         data.plot(grid=True, marker=self._marker, figsize=self._figure_size)
         plt.savefig(fig_filepath, dpi=self._dpi, bbox_inches='tight')
