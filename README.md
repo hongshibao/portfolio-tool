@@ -41,6 +41,12 @@ This is a simple tool to compute daily closed price with currency impact for you
 
         $ pipenv shell
 
+5. (Optional) Install this `portfolio-tool` package locally in develop/editable mode
+
+        $ pip install -e .
+
+    Remove `-e` to disable develop/editable mode.
+
 ## Usage
 Run --help to get usage and arguments:
 
