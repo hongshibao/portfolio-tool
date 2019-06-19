@@ -1,0 +1,2 @@
+include Pipfile Pipfile.lock
+recursive-include resources *
