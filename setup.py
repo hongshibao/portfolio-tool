@@ -20,4 +20,7 @@ setup(
     python_requires='>=3.7.0',
     url='https://github.com/hongshibao/portfolio-tool',
     packages=find_packages(),
+    classifiers=[
+        "Programming Language :: Python :: 3",
+    ],
 )
