@@ -17,13 +17,17 @@ This is a simple tool to compute daily closed price with currency impact for you
           $ git clone git@github.com:hongshibao/portfolio-tool.git
           $ cd portfolio-tool
 
-   2. Make sure it will run python 3.7.3 in this repository:
+   2. Switch to use python 3.7.3 for this repository:
+
+          $ pyenv local 3.7.3
+
+   3. Make sure it will run python 3.7.3 in this repository:
 
           $ python --version
 
       It should output `Python 3.7.3`. Otherwise, please check whether `pyenv` installation is complete.
 
-   3. Use `pip` to install `pipenv`:
+   4. Use `pip` to install `pipenv`:
 
           $ pip install pipenv
 
