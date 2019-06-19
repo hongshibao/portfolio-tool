@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 about = {}
@@ -17,5 +17,5 @@ setup(
     long_description_content_type='text/markdown',
     python_requires='>=3.7.0',
     url='https://github.com/hongshibao/portfolio-tool',
-    packages=['portfolio']
+    packages=find_packages(),
 )
