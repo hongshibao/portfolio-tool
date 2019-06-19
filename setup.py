@@ -11,6 +11,8 @@ with open('README.md') as f:
 
 setup(
     name='portfolio-tool',
+    author='Hong Shibao',
+    author_email='shibaohong@outlook.com',
     version=about['__version__'],
     description='A simple tool to compute portfolio daily price with currency impact',
     long_description=long_description,
