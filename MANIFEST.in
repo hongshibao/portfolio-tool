@@ -1,2 +1,2 @@
-include Pipfile Pipfile.lock
+include Pipfile Pipfile.lock LICENSE
 recursive-include resources *
