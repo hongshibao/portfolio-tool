@@ -37,7 +37,7 @@ This is a simple tool to compute daily closed price with currency impact for you
 
    It will also create a virtual environment dedicated to this repository.
 
-4. Activate the virtual environment
+4. Activate the dedicated virtual environment
 
         $ pipenv shell
 
