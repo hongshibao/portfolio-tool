@@ -2,6 +2,7 @@ from loguru import logger
 from zope.interface.verify import verifyObject
 from portfolio.data.interface import IData
 from csv import reader as CSVReader
+from datetime import datetime
 
 
 # disable logging in modules
@@ -18,7 +19,15 @@ class Calculator:
         self.read_portfolio()
 
 
-    def get_portfolio_price(self, num_days):
+    def get_portfolio_price(self, start_day='', num_days=100):
+        if start_day:
+            date_format = '%Y-%m-%d'
+            start_date = datetime.strptime(start_day, date_format)
+            num_days = (datetime.today() - start_date).days + 1
+            if num_days < 1:
+                raise Exception("start_day {} is invalid".format(start_day))
+        if num_days < 1:
+            raise Exception("num_days {} is invalid".format(num_days))
         # get daily price data
         price_data_list = self.get_price_data(2 * num_days)
         # get currency exchange data
@@ -28,7 +37,15 @@ class Calculator:
             price_data_list,
             cc_data_dict,
         )
-        return portfolio_price[-num_days:]
+        # return required data rows
+        if start_day:
+            ret = portfolio_price.loc[start_day:]
+        else:
+            ret = portfolio_price[-num_days:]
+        # at least return one row
+        if len(ret.index) == 0:
+            ret = portfolio_price[-1:]
+        return ret
 
 
     def read_portfolio(self):

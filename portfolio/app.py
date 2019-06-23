@@ -20,6 +20,8 @@ logger.enable("portfolio.plotter")
               help="The portfolio CSV file")
 @click.option("--to-currency", type=str, default="SGD", 
               help="Destination currency for the portfolio")
+@click.option("--start-day", type=str, default="",
+              help="Start day (YYYY-MM-DD) for portfolio price data, priority is higher than --num-days")
 @click.option("--num-days", type=int, default=100, 
               help="The number of days for latest portfolio price data")
 @click.option("--fig-filepath", type=str, default="fig.png", 
@@ -27,13 +29,13 @@ logger.enable("portfolio.plotter")
 @click.option("--price-scaling", type=bool, is_flag=True, 
               help="Do price scaling")
 def run(data_api_key, enable_api_rate_control,
-        csv_filepath, to_currency, num_days,
+        csv_filepath, to_currency, start_day, num_days,
         fig_filepath, price_scaling):
     data_src = AlphaVantageData(data_api_key, enable_api_rate_control)
     calc = Calculator(data_src, csv_filepath, to_currency)
     # get portfolio price
     logger.debug("Start to compute portfolio price with currency impact")
-    portfolio_price = calc.get_portfolio_price(num_days)
+    portfolio_price = calc.get_portfolio_price(start_day, num_days)
     portfolio_close_price = data_src.get_close_price(portfolio_price)
     if price_scaling:
         portfolio_close_price = portfolio_close_price / portfolio_close_price[0]
