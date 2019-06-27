@@ -16,7 +16,7 @@ class Calculator:
         self._csv_filepath = csv_filepath
         self._to_currency = to_currency
         # read portfolio to get symbols, currencies, and weights
-        self.read_portfolio()
+        self._read_portfolio()
 
 
     def get_portfolio_price(self, start_day='', num_days=100):
@@ -29,11 +29,11 @@ class Calculator:
         if num_days < 1:
             raise Exception("num_days {} is invalid".format(num_days))
         # get daily price data
-        price_data_list = self.get_price_data(2 * num_days)
+        price_data_list = self._get_price_data(2 * num_days)
         # get currency exchange data
-        cc_data_dict = self.get_currency_exchange_data(2 * num_days)
+        cc_data_dict = self._get_currency_exchange_data(2 * num_days)
         # compute portfolio price with currency impact
-        portfolio_price = self.compute_portfolio_price_with_cc_impact(
+        portfolio_price = self._compute_portfolio_price_with_cc_impact(
             price_data_list,
             cc_data_dict,
         )
@@ -48,7 +48,7 @@ class Calculator:
         return ret
 
 
-    def read_portfolio(self):
+    def _read_portfolio(self):
         self._symbols = []
         self._currencies = []
         self._weights = []
@@ -66,7 +66,7 @@ class Calculator:
                 self._weights.append(float(row[2]))
 
 
-    def get_price_data(self, num_days):
+    def _get_price_data(self, num_days):
         price_data_list = []
         for symbol in self._symbols:
             logger.debug("Getting price data for {}", symbol)
@@ -76,7 +76,7 @@ class Calculator:
         return price_data_list
 
 
-    def get_currency_exchange_data(self, num_days):
+    def _get_currency_exchange_data(self, num_days):
         cc_data_dict = {}
         for from_currency in self._currencies:
             if from_currency in cc_data_dict:
@@ -94,7 +94,7 @@ class Calculator:
         return cc_data_dict
 
 
-    def compute_portfolio_price_with_cc_impact(self, price_data_list, cc_data_dict):
+    def _compute_portfolio_price_with_cc_impact(self, price_data_list, cc_data_dict):
         portfolio_price = 0
         for i in range(len(self._weights)):
             # last column of price_data is "volume", which cc_data does not have

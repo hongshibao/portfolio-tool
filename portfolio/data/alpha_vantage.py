@@ -15,7 +15,7 @@ class AlphaVantageData:
         self._api_rate_control_time = 60 # in seconds
 
 
-    def check_api_rate_limit(self):
+    def _check_api_rate_limit(self):
         if self._enable_api_rate_control:
             self._api_call_count = self._api_call_count + 1
             if self._api_call_count > 1 and \
@@ -24,7 +24,7 @@ class AlphaVantageData:
 
 
     def get_price_daily(self, symbol, num_days):
-        self.check_api_rate_limit()
+        self._check_api_rate_limit()
         ts = TimeSeries(key=self._api_key, output_format='pandas')
         output_size = 'compact'
         if num_days > 100:
@@ -34,7 +34,7 @@ class AlphaVantageData:
 
 
     def get_forex_daily(self, from_currency, to_currency, num_days):
-        self.check_api_rate_limit()
+        self._check_api_rate_limit()
         cc = ForeignExchange(key=self._api_key, output_format='pandas')
         output_size = 'compact'
         if num_days > 100:
