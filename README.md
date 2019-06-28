@@ -60,6 +60,8 @@ Options:
   --enable-api-rate-control  Enable API rate limit control
   --csv-filepath TEXT        The portfolio CSV file
   --to-currency TEXT         Destination currency for the portfolio
+  --start-day TEXT           Start day (YYYY-MM-DD) for portfolio price data,
+                             priority is higher than --num-days
   --num-days INTEGER         The number of days for latest portfolio price
                              data
   --fig-filepath TEXT        The path and file name for time series figure
@@ -93,3 +95,9 @@ Example output without price scaling:
 Example output with price scaling:
 
 ![figure with price scaling](resources/fig-scaling.png)
+
+## Docker
+There is a docker image `thinkpoet/portfolio-tool` available to run the script using `docker run`:
+
+       $ docker pull thinkpoet/portfolio-tool:latest
+       $ docker run --rm -v ${your_local_portfolio_csv_absolute_path}:/data/input/portfolio.csv  -v ${your_local_output_folder_absolute_path}:/data/output thinkpoet/portfolio-tool:latest --data-api-key=${your_api_key} --enable-api-rate-control --csv-filepath=/data/input/portfolio.csv --fig-filepath=/data/output/figure.png
