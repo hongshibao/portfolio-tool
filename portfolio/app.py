@@ -43,7 +43,8 @@ def run(data_api_key, enable_api_rate_control,
     if len(portfolio_close_price.index) > 1:
         last_day_diff = portfolio_close_price[-1] - portfolio_close_price[-2]
         last_day_inc_rate = last_day_diff / portfolio_close_price[-2]
-        logger.debug("Last-day price increase rate: {:.2%}", last_day_inc_rate)
+        logger.debug("Last-day [{}] price increase rate: {:.2%}", 
+                        portfolio_close_price.index[-1], last_day_inc_rate)
     # plot
     plt = Plotter()
     logger.debug("Start to plot portfolio price time series")
