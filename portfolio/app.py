@@ -12,8 +12,8 @@ logger.enable("portfolio.plotter")
 
 # @logger.catch
 @click.command()
-@click.option("--data-api-key", type=str, default="", 
-              help="Alpha Vantage API key")
+@click.option("--data-api-key", type=str, default="", envvar="DATA_API_KEY", 
+              help="Alpha Vantage API key, which will read from env var DATA_API_KEY if not specified")
 @click.option("--enable-api-rate-control", type=bool, is_flag=True, 
               help="Enable API rate limit control")
 @click.option("--csv-filepath", type=str, default="resources/portfolio.csv", 

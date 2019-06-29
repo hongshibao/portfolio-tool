@@ -1,5 +1,5 @@
 # portfolio-tool
-This is a simple tool to compute daily closed price with currency impact for your portfolio. The daily stock price and currency exchange rate are from [Alpha Vantage](https://www.alphavantage.co/) [API](https://www.alphavantage.co/documentation/).
+This is a simple tool to compute daily closed price with currency impact for your portfolio. The daily stock price and currency exchange rate are from [Alpha Vantage](https://www.alphavantage.co/) [API](https://www.alphavantage.co/documentation/). You can add new data sources by implementing the data interface [IData](portfolio/data/interface.py) in `portfolio/data/interface.py`.
 
 ## Environment Setup
 1. Install python3 using `pyenv`
@@ -56,7 +56,8 @@ Run --help to get usage and arguments:
 Usage: app.py [OPTIONS]
 
 Options:
-  --data-api-key TEXT        Alpha Vantage API key
+  --data-api-key TEXT        Alpha Vantage API key, which will read from env
+                             var DATA_API_KEY if not specified
   --enable-api-rate-control  Enable API rate limit control
   --csv-filepath TEXT        The portfolio CSV file
   --to-currency TEXT         Destination currency for the portfolio
