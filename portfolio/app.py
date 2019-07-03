@@ -21,7 +21,7 @@ logger.enable("portfolio.plotter")
 @click.option("--to-currency", type=str, default="SGD", 
               help="Destination currency for the portfolio")
 @click.option("--start-day", type=str, default="",
-              help="Start day (YYYY-MM-DD) for portfolio price data, priority is higher than --num-days")
+              help="Start day (YYYY-MM-DD) in EST time zone for portfolio price data, priority is higher than --num-days")
 @click.option("--num-days", type=int, default=100, 
               help="The number of days for latest portfolio price data")
 @click.option("--fig-filepath", type=str, default="fig.png", 

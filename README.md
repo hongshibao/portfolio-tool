@@ -61,8 +61,9 @@ Options:
   --enable-api-rate-control  Enable API rate limit control
   --csv-filepath TEXT        The portfolio CSV file
   --to-currency TEXT         Destination currency for the portfolio
-  --start-day TEXT           Start day (YYYY-MM-DD) for portfolio price data,
-                             priority is higher than --num-days
+  --start-day TEXT           Start day (YYYY-MM-DD) in EST time zone for
+                             portfolio price data, priority is higher than
+                             --num-days
   --num-days INTEGER         The number of days for latest portfolio price
                              data
   --fig-filepath TEXT        The path and file name for time series figure
