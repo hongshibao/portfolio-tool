@@ -32,11 +32,11 @@ def run(data_api_key, enable_api_rate_control,
         csv_filepath, to_currency, start_day, num_days,
         fig_filepath, price_scaling):
     data_src = AlphaVantageData(data_api_key, enable_api_rate_control)
-    calc = Calculator(data_src, csv_filepath, to_currency)
+    calc = Calculator(data_src, data_src, csv_filepath, to_currency)
     # get portfolio price
     logger.debug("Start to compute portfolio price with currency impact")
     portfolio_price = calc.get_portfolio_price(start_day, num_days)
-    portfolio_close_price = data_src.get_close_price(portfolio_price)
+    portfolio_close_price = portfolio_price["close"]
     if price_scaling:
         portfolio_close_price = portfolio_close_price / portfolio_close_price[0]
     logger.debug("Computing portfolio price with currency impact is done")

@@ -1,6 +1,6 @@
 from loguru import logger
 from zope.interface.verify import verifyObject
-from portfolio.data.interface import IData
+from portfolio.data.interface import IDataStock, IDataForex
 from csv import reader as CSVReader
 from datetime import datetime
 
@@ -10,9 +10,11 @@ logger.disable("portfolio.calculator")
 
 
 class Calculator:
-    def __init__(self, data_src, csv_filepath, to_currency):
-        verifyObject(IData, data_src)
-        self._data_src = data_src
+    def __init__(self, stock_data_src, forex_data_src, csv_filepath, to_currency):
+        verifyObject(IDataStock, stock_data_src)
+        verifyObject(IDataForex, forex_data_src)
+        self._stock_data_src = stock_data_src
+        self._forex_data_src = forex_data_src
         self._csv_filepath = csv_filepath
         self._to_currency = to_currency
         # read portfolio to get symbols, currencies, and weights
@@ -70,7 +72,7 @@ class Calculator:
         price_data_list = []
         for symbol in self._symbols:
             logger.debug("Getting price data for {}", symbol)
-            price_data = self._data_src.get_price_daily(symbol, num_days)
+            price_data = self._stock_data_src.get_price_daily(symbol, num_days)
             price_data_list.append(price_data)
             logger.debug("Price data for {} is gotten", symbol)
         return price_data_list
@@ -83,7 +85,7 @@ class Calculator:
                 continue
             logger.debug("Getting currency exchange data for {} -> {}", 
                             from_currency, self._to_currency)
-            cc_data = self._data_src.get_forex_daily(
+            cc_data = self._forex_data_src.get_forex_daily(
                 from_currency,
                 self._to_currency,
                 num_days,
