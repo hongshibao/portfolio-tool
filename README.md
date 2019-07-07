@@ -1,12 +1,12 @@
 # portfolio-tool
-This is a simple tool to compute daily closed price with currency impact for your portfolio. The daily stock price and currency exchange rate are from [Alpha Vantage](https://www.alphavantage.co/) [API](https://www.alphavantage.co/documentation/). You can add new data sources by implementing the data interface [IDataStock](portfolio/data/interface.py#L5) and [IDataForex](portfolio/data/interface.py#L10) in `portfolio/data/interface.py`.
+This is a simple tool to compute daily closed price with currency impact for your portfolio. The daily stock price and currency exchange rate are from [Alpha Vantage](https://www.alphavantage.co/) [API](https://www.alphavantage.co/documentation/). You can add new data sources (e.g. [IEX](https://iexcloud.io/), [Tiingo](https://www.tiingo.com/), [Yahoo! Finance](https://finance.yahoo.com/)) by implementing the data interface [IDataStock](portfolio/data/interface.py#L5) and [IDataForex](portfolio/data/interface.py#L10) in `portfolio/data/interface.py`.
 
 ## Environment Setup
 1. Install python3 using `pyenv`
 
    1. Follow these instructions for `pyenv` [installation](https://github.com/pyenv/pyenv#installation) or use `pyenv` [automatic installer](https://github.com/pyenv/pyenv-installer).
 
-   1. Install python 3.7.3:
+   2. Install python 3.7.3:
 
           $ pyenv install 3.7.3
 
