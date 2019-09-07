@@ -58,6 +58,8 @@ class Calculator:
             reader = CSVReader(csvfile, delimiter=',')
             is_header = True
             for row in reader:
+                if len(row) != 3:
+                    continue
                 if is_header:
                     is_header = False
                     continue
