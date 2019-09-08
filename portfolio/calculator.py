@@ -83,7 +83,7 @@ class Calculator:
     def _get_currency_exchange_data(self, num_days):
         cc_data_dict = {}
         for from_currency in self._currencies:
-            if from_currency in cc_data_dict:
+            if from_currency in cc_data_dict or from_currency == self._to_currency:
                 continue
             logger.debug("Getting currency exchange data for {} -> {}", 
                             from_currency, self._to_currency)
@@ -103,9 +103,13 @@ class Calculator:
         for i in range(len(self._weights)):
             # last column of price_data is "volume", which cc_data does not have
             price_data = price_data_list[i].iloc[:, 0:-1]
-            cc_data = cc_data_dict[self._currencies[i]]
-            # use dropna() to remove NaN rows
-            price_with_cc_impact = (price_data * cc_data).dropna()
+            if self._currencies[i] == self._to_currency:
+                # need to copy data
+                price_with_cc_impact = price_data.copy()
+            else:
+                cc_data = cc_data_dict[self._currencies[i]]
+                # use dropna() to remove NaN rows
+                price_with_cc_impact = (price_data * cc_data).dropna()
             weighted_price_with_cc_impact = price_with_cc_impact * self._weights[i]
             portfolio_price = (portfolio_price + weighted_price_with_cc_impact).dropna()
         return portfolio_price
